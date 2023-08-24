@@ -5,8 +5,6 @@ import habsida.spring.boot_security.demo.model.Role;
 import habsida.spring.boot_security.demo.model.User;
 import habsida.spring.boot_security.demo.service.RoleService;
 import habsida.spring.boot_security.demo.service.UserService;
-import habsida.spring.boot_security.demo.service.UserServiceImp;
-import org.hibernate.internal.util.collections.IdentitySet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -29,53 +27,51 @@ public class UserController {
     }
 
 
-    @GetMapping(value = "/user")
+    @GetMapping(value = "/")
     public String getAll(ModelMap model) {
         List<User> users = userService.getUsers();
         model.addAttribute("users", users);
-        return "user";
+        return "index";
     }
 
-    @GetMapping(value = "/admin")
-    public String getAllAdmin(ModelMap model) {
-        List<User> users = userService.getUsers();
-        model.addAttribute("users", users);
-        return "admin";
+    @GetMapping(value = "/login")
+    public String login(){
+        return"login";
     }
 
     @DeleteMapping(value = "/admin/{id}")
     public String deleteUser(ModelMap model, @PathVariable Integer id){
         userService.deleteById(id);
-        return getAllAdmin(model);
+        return getAll(model);
     }
 
     @PostMapping(value = "/admin/{id}")
     public String editUser(ModelMap model, @PathVariable Integer id, @RequestBody UserDto userDto){
         Set<Role> roles = new HashSet<>();
-        if(userDto.getRoles().contains("ROLE_USER")){
-            roles.add(roleService.findByName("ROLE_USER"));
-        }if(userDto.getRoles().contains("ROLE_ADMIN")){
-            roles.add(roleService.findByName("ROLE_ADMIN"));
+        if(userDto.getRoles().contains("USER")){
+            roles.add(roleService.findByName("USER"));
+        }if(userDto.getRoles().contains("ADMIN")){
+            roles.add(roleService.findByName("ADMIN"));
         }
-        User user = new User(userDto.getLogin(), userDto.getPassword(), userDto.getEmail());
+        User user = new User(userDto.getFirstName(),userDto.getLastName(),userDto.getAge(), userDto.getPassword(), userDto.getEmail());
         user.setRoles(roles);
         user.setId((long)id);
         userService.updateUser(user);
-        return getAllAdmin(model);
+        return getAll(model);
 
     }
 
     @PostMapping(value = "/admin/add")
     public String addUser(ModelMap model, @RequestBody UserDto userDto){
         Set<Role> roles = new HashSet<>();
-        if(userDto.getRoles().contains("ROLE_USER")){
-            roles.add(roleService.findByName("ROLE_USER"));
-        }if(userDto.getRoles().contains("ROLE_ADMIN")){
-            roles.add(roleService.findByName("ROLE_ADMIN"));
+        if(userDto.getRoles().contains("USER")){
+            roles.add(roleService.findByName("USER"));
+        }if(userDto.getRoles().contains("ADMIN")){
+            roles.add(roleService.findByName("ADMIN"));
         }
-        User user = new User(userDto.getLogin(), userDto.getPassword(), userDto.getEmail());
+        User user = new User(userDto.getFirstName(),userDto.getLastName(),userDto.getAge(), userDto.getPassword(), userDto.getEmail());
         user.setRoles(roles);
         userService.add(user);
-        return getAllAdmin(model);
+        return getAll(model);
     }
 }

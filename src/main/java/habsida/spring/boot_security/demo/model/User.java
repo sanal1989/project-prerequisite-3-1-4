@@ -26,8 +26,14 @@ public class User {
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
 
-   @Column(name = "login")
-   private String login;
+   @Column(name = "firstName")
+   private String firstName;
+
+   @Column(name = "lastName")
+   private String lastName;
+
+   @Column(name = "age")
+   private int age;
 
    @Column(name = "password")
    private String password;
@@ -44,8 +50,10 @@ public class User {
 
    public User() {}
 
-   public User(String login, String password, String email) {
-      this.login = login;
+   public User(String firstName, String lastName, int age, String password, String email) {
+      this.firstName = firstName;
+      this.lastName = lastName;
+      this.age = age;
       this.password = password;
       this.email = email;
    }
@@ -58,12 +66,12 @@ public class User {
       this.id = id;
    }
 
-   public String getLogin() {
-      return login;
+   public String getFirstName() {
+      return firstName;
    }
 
-   public void setLogin(String firstName) {
-      this.login = firstName;
+   public void setFirstName(String firstName) {
+      this.firstName = firstName;
    }
 
    public String getPassword() {
@@ -80,6 +88,22 @@ public class User {
 
    public void setEmail(String email) {
       this.email = email;
+   }
+
+   public String getLastName() {
+      return lastName;
+   }
+
+   public void setLastName(String lastName) {
+      this.lastName = lastName;
+   }
+
+   public int getAge() {
+      return age;
+   }
+
+   public void setAge(int age) {
+      this.age = age;
    }
 
    public Set<Role> getRoles() {

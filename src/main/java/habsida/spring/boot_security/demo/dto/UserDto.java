@@ -1,12 +1,9 @@
 package habsida.spring.boot_security.demo.dto;
 
-import habsida.spring.boot_security.demo.model.Role;
-
-import java.util.HashSet;
-import java.util.Set;
-
 public class UserDto {
-    private String login;
+    private String firstName;
+    private String lastName;
+    private int age;
     private String password;
     private String email;
     private String roles;
@@ -14,19 +11,21 @@ public class UserDto {
     public UserDto() {
     }
 
-    public UserDto(String firstName, String lastName, String email, String roles) {
-        this.login = firstName;
-        this.password = lastName;
+    public UserDto(String firstName, String lastName, int age, String password, String email, String roles) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.password = password;
         this.email = email;
         this.roles = roles;
     }
 
-    public String getLogin() {
-        return login;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getPassword() {
@@ -43,6 +42,22 @@ public class UserDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public String getRoles() {

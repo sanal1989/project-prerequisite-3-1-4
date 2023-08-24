@@ -27,7 +27,6 @@ public class UserDaoImp implements UserDao {
     @Override
     public void add(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        System.out.println(user.getPassword());
         userRepository.save(user);
     }
 
@@ -42,8 +41,16 @@ public class UserDaoImp implements UserDao {
 
     @Override
     public void updateUser(User user) {
-
-        userRepository.save(user);
+        User userFromBD = userRepository.findById(user.getId()).get();
+        if(!user.getPassword().isEmpty()){
+            userFromBD.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        }
+        userFromBD.setFirstName(user.getFirstName());
+        userFromBD.setLastName(user.getLastName());
+        userFromBD.setAge(user.getAge());
+        userFromBD.setEmail(user.getEmail());
+        userFromBD.setRoles(user.getRoles());
+        userRepository.save(userFromBD);
     }
 
     @Override
