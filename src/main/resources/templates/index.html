@@ -57,7 +57,7 @@
                                 <tr class="bg-white">
                                     <td>
                                         <hr>
-                                        <table class="table">
+                                        <table id="admin-table" class="table">
                                             <thead>
                                             <tr>
                                                 <th scope="col">ID</th>
@@ -106,7 +106,7 @@
                                     <td>
                                         <div class="row">
                                             <div class="mx-auto col-10 col-md-8 col-lg-6">
-                                                <form id="add-new-user-form" th:onsubmit="submitForm()">
+                                                <form id="add-new-user-form" onsubmit="submitForm();return false">
                                                     <div class="mb-3 col-8 text-center mt-3">
                                                         <label for="first-name-new-user" class="form-label "><b>First Name</b></label>
                                                         <input type="text" class="form-control " id="first-name-new-user" required>
@@ -135,7 +135,7 @@
                                                         </select>
                                                     </div>
                                                     <div class="mb-3 col-8 text-center">
-                                                        <button type="submit" class="btn btn-primary">Add new user</button>
+                                                        <button type="submit" class="btn btn-primary" >Add new user</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -160,9 +160,9 @@
                         </thead>
                         <tbody>
                         <tr class="bg-white">
-                            <td>
+                            <td id="user-td">
                                 <hr>
-                                <table class="table">
+                                <table id="user-table" class="table">
                                     <thead>
                                     <tr>
                                         <th scope="col">ID</th>
@@ -306,6 +306,56 @@
 </div>
 </div>
 <script>
+    function renderDataUserTable(data) {
+                let tableHeader = "<table id='user-table' class='table'><thead><tr><th scope='col'>ID</th><th scope='col'>First name</th><th scope='col'>Last name</th><th scope='col'>Age</th><th scope='col'>Email</th><th scope='col'>Roles</th></tr></thead><tbody>";
+                let tableContent = "";
+                for(i = 0; i < data.length; i++) {
+                    tableContent = tableContent + "<tr class=\"table-secondary\">" +
+                        "<th scope=\"row\" id=\"tr_id_"+ data[i].id+"\">"+ data[i].id+"</th>" +
+                        "<td id=\"tr_fn_" + data[i].id + "\">"+data[i].firstName+"</td>" +
+                        "<td id=\"tr_ln_" + data[i].id + "\">"+data[i].lastName+"</td>" +
+                        "<td id=\"tr_age_" + data[i].id + "\">"+data[i].age+"</td>" +
+                        "<td id=\"tr_em_" + data[i].id + "\">"+data[i].email+"</td>" +
+                        "<td id=\"tr_cm_" + data[i].id + "\">"+data[i].roles+"</td></tr>";
+                }
+                let tableFooter = "</tbody></table>";
+                let currentNode = document.querySelector('#user-table');
+                let newNode = document.createElement('table');
+                newNode.classList.add("table");
+                newNode.setAttribute("id","user-table");
+                console.log(tableHeader + tableContent + tableFooter);
+                newNode.innerHTML = tableHeader + tableContent + tableFooter;
+                setTimeout(()=>{
+                    currentNode.parentNode.replaceChild(newNode, currentNode);
+                },1000);
+
+    }
+
+    function renderDataAdminTable(data) {
+        let tableHeader = "<table id='admin-table' class='table'><thead><tr><th scope='col'>ID</th><th scope='col'>First name</th><th scope='col'>Last name</th><th scope='col'>Age</th><th scope='col'>Email</th><th scope='col'>Roles</th><th scope=\"col\">Edit</th><th scope=\"col\">Delete</th></tr></thead><tbody>";
+        let tableContent = "";
+        for(i = 0; i < data.length; i++) {
+            tableContent = tableContent + "<tr class=\"table-secondary\">" +
+                "<th scope=\"row\" id=\"tr_id_"+ data[i].id+"\">"+ data[i].id+"</th>" +
+                "<td id=\"tr_fn_" + data[i].id + "\">"+data[i].firstName+"</td>" +
+                "<td id=\"tr_ln_" + data[i].id + "\">"+data[i].lastName+"</td>" +
+                "<td id=\"tr_age_" + data[i].id + "\">"+data[i].age+"</td>" +
+                "<td id=\"tr_em_" + data[i].id + "\">"+data[i].email+"</td>" +
+                "<td id=\"tr_cm_" + data[i].id + "\">"+data[i].roles+"</td>" +
+                "<td><button type=\"button\" class=\"btn btn-secondary\" data-bs-toggle=\"modal\" data-bs-target=\"#editModal\" onclick=\"edit_user("  + data[i].id + ")\">Edit</button></td><td><button type=\"button\" class=\"btn btn-danger\" data-bs-toggle=\"modal\" data-bs-target=\"#deleteModal\" onclick=\"delete_user_window(" + data[i].id + ")\">Delete</button></td></tr>";
+        }
+        let tableFooter = "</tbody></table>";
+        let currentNode = document.querySelector('#admin-table');
+        let newNode = document.createElement('table');
+        newNode.classList.add("table");
+        newNode.setAttribute("id","admin-table");
+        console.log(tableHeader + tableContent + tableFooter);
+        newNode.innerHTML = tableHeader + tableContent + tableFooter;
+        setTimeout(()=>{
+            currentNode.parentNode.replaceChild(newNode, currentNode);
+        },1000);
+
+    }
     function delete_user_window(user_id){
         let tr_id = "#tr_id_" + user_id;
         let v_id = $(tr_id).html();
@@ -339,10 +389,12 @@
         $.ajax({
             url: url,
             type: 'DELETE',
-            success: function (){
-                window.location.reload();
+            success:function (data){
+                renderDataUserTable(data);
+                renderDataAdminTable(data);
             }
         });
+
     }
     function edit_user(user_id){
         let tr_id = "#tr_id_" + user_id;
@@ -390,21 +442,17 @@
             method: 'POST',
             dataType: 'json',
             contentType: 'application/json;charset=UTF-8',
-            data: JSON.stringify(formData)
+            data: JSON.stringify(formData),
+            success:function (data){
+                console.log(data);
+                renderDataUserTable(data);
+                renderDataAdminTable(data);
+            }
         });
     }
-    $(document).ready(function() {
-        $("#add-new-user-form").submit(function(event) {
-            event.preventDefault();
-            setTimeout(()=>{
-                window.location.reload();
-            },1000)
-        });
-    });
 
     function update_user(){
         let user_id = $("#id-edit-user").val();
-        console.log(user_id);
         let url = "/admin/" + user_id;
         const formData = {
             firstName: $('#first-name-edit-user').val(),
@@ -420,13 +468,15 @@
             method: 'POST',
             dataType: 'json',
             contentType: 'application/json;charset=UTF-8',
-            data: JSON.stringify(formData)
+            data: JSON.stringify(formData),
+            success:function (data){
+                renderDataUserTable(data);
+                renderDataAdminTable(data);
+            }
         });
-
-        setTimeout(()=>{
-            document.location.reload();
-        },1000);
     }
+
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>

@@ -1,6 +1,7 @@
 package habsida.spring.boot_security.demo.dto;
 
 public class UserDto {
+    private int id;
     private String firstName;
     private String lastName;
     private int age;
@@ -18,6 +19,24 @@ public class UserDto {
         this.password = password;
         this.email = email;
         this.roles = roles;
+    }
+
+    public UserDto(int id, String firstName, String lastName, int age, String password, String email, String roles) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.password = password;
+        this.email = email;
+        this.roles = roles;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFirstName() {
